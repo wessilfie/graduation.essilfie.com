@@ -18,13 +18,21 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Send Will a Card — CBS MBA '26",
+  title: "Will Essilfie's Graduation — Get a Card from Me",
   description:
-    "Will Essilfie is graduating from Columbia Business School in May 2026. Share your address so he can send you a graduation card.",
+    "I'm graduating from Columbia Business School next month! Drop your address and I'll send you a graduation card.",
   openGraph: {
-    title: "Send Will a Card — CBS MBA '26",
+    title: "Will Essilfie's Graduation — Get a Card from Me",
     description:
-      "Will Essilfie is graduating from Columbia Business School in May 2026. Share your address so he can send you a graduation card.",
+      "I'm graduating from Columbia Business School next month! Drop your address and I'll send you a graduation card.",
+    images: [
+      {
+        url: "/will.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Will Essilfie's Graduation Card",
+      },
+    ],
   },
 };
 
