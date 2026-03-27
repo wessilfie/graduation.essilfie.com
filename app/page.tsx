@@ -709,14 +709,6 @@ export default function Page() {
           ].join(", "),
         }}
       >
-        {/* Paper aging overlay — always present */}
-        <div className="absolute inset-0 pointer-events-none z-10 rounded-[3px]"
-          style={{
-            background: [
-              "radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(90,70,45,0.10) 100%)",
-              "linear-gradient(to bottom, rgba(0,0,0,0.03) 0%, transparent 8%, transparent 92%, rgba(0,0,0,0.04) 100%)",
-            ].join(", "),
-          }} />
 
         {/* ── FRONT FACE ── */}
         {(flipState === "front" || flipState === "flip-out") && (
@@ -772,16 +764,18 @@ export default function Page() {
         {/* ── BACK FACE ── */}
         {(flipState === "flip-in" || flipState === "back") && (
           <div className="px-6 pt-6 pb-7 space-y-5">
-            {/* Letter header — date + stamp */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="pt-1">
-                <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
-                <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
+            {/* Letter header — date + stamp, only on form step */}
+            {step === "form" && (
+              <div className="flex items-start justify-between gap-4">
+                <div className="pt-1">
+                  <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
+                  <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
+                </div>
+                <div className="shrink-0">
+                  <Stamp />
+                </div>
               </div>
-              <div className="shrink-0">
-                <Stamp />
-              </div>
-            </div>
+            )}
 
             {/* Letter body — hidden on review + confirmation */}
             <div className={`space-y-3.5 text-[15px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`} style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
