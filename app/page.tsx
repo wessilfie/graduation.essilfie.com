@@ -556,7 +556,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
   return (
     <div className="form-unfold space-y-5">
       <div>
-        <p className="text-base font-semibold text-stone-800">Does this look right?</p>
+        <p className="font-fraunces text-[18px] font-semibold text-stone-800">Does this look right?</p>
         <p className="text-xs text-stone-400 mt-0.5">Take a quick look before I send it your way.</p>
       </div>
 
@@ -600,12 +600,12 @@ function ConfirmationStep() {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <p className="text-stone-800 text-base leading-relaxed">
+      <div className="font-fraunces space-y-1">
+        <p className="text-stone-800 text-[16px] leading-relaxed">
           Thanks for filling out your info! I can&rsquo;t wait to send you this card.
           Chat soon,
         </p>
-        <p className="text-stone-800 font-semibold text-base">Will</p>
+        <p className="text-stone-800 font-semibold text-[16px]">Will</p>
       </div>
 
       <div className="pt-2 border-t border-stone-100">
@@ -736,7 +736,7 @@ export default function Page() {
               {/* From */}
               <div className="flex-[5] px-5 py-4">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">From</p>
-                <p className="text-[13px] font-semibold text-stone-800 leading-snug">
+                <p className="font-fraunces font-semibold text-[14px] text-stone-800 leading-snug">
                   Will Essilfie
                 </p>
                 <p className="text-[11px] text-stone-400 mt-1 leading-snug">
@@ -750,7 +750,7 @@ export default function Page() {
               {/* To — "You!" */}
               <div className="flex-[5] px-5 py-4 flex flex-col justify-center">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">To</p>
-                <p className="text-[24px] font-bold leading-none text-stone-800">
+                <p className="font-fraunces font-semibold text-[26px] leading-none text-stone-800">
                   You!
                 </p>
                 <p className="text-[10.5px] text-stone-400 mt-1.5 leading-snug">
@@ -778,7 +778,7 @@ export default function Page() {
             )}
 
             {/* Letter body — hidden on review + confirmation */}
-            <div className={`space-y-3.5 text-[15px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`} style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+            <div className={`font-fraunces space-y-3.5 text-[15.5px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`}>
               <p>Hey there!</p>
               <p>
                 I&rsquo;m graduating from Columbia in May with my MBA. As I prepare
