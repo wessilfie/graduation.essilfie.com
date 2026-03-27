@@ -783,8 +783,8 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Letter body */}
-            <div className="space-y-3.5 text-[15px] text-stone-700 leading-[1.85]" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+            {/* Letter body — hidden on review + confirmation */}
+            <div className={`space-y-3.5 text-[15px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`} style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
               <p>Hey there!</p>
               <p>
                 I&rsquo;m graduating from Columbia in May with my MBA. As I prepare
