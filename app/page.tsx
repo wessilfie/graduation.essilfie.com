@@ -14,6 +14,7 @@ type CountryConfig = {
   zipLabel: string;
   zipPlaceholder: string;
   streetPlaceholder: string;
+  hideState?: boolean;
 };
 
 const US_STATES = [
@@ -66,7 +67,7 @@ const AU_STATES = [
 // Pinned: US, GB, GH — then alphabetical
 const COUNTRY_LIST: { code: string; config: CountryConfig }[] = [
   { code: "US", config: { name: "United States", stateLabel: "State", states: US_STATES, zipLabel: "ZIP code", zipPlaceholder: "10027", streetPlaceholder: "665 W. 130th Street" } },
-  { code: "GB", config: { name: "United Kingdom", stateLabel: "County", states: null, zipLabel: "Postcode", zipPlaceholder: "SW1A 1AA", streetPlaceholder: "Street address" } },
+  { code: "GB", config: { name: "United Kingdom", stateLabel: "County", states: null, zipLabel: "Postcode", zipPlaceholder: "SW1A 1AA", streetPlaceholder: "Street address", hideState: true } },
   { code: "GH", config: { name: "Ghana", stateLabel: "Region", states: null, zipLabel: "Postal code", zipPlaceholder: "", streetPlaceholder: "Street address" } },
   { code: "AU", config: { name: "Australia", stateLabel: "State", states: AU_STATES, zipLabel: "Postcode", zipPlaceholder: "2000", streetPlaceholder: "Street address" } },
   { code: "AT", config: { name: "Austria", stateLabel: "State", states: null, zipLabel: "Postal code", zipPlaceholder: "", streetPlaceholder: "Street address" } },
@@ -437,15 +438,17 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
           <input id="city" type="text" autoComplete="address-level2"
             placeholder="City" value={data.city} onChange={set("city")} className={inputCls} />
         </Field>
-        <Field id="state" label={cfg.stateLabel}>
-          {cfg.states ? (
-            <Combobox id="state" value={data.state} placeholder={cfg.stateLabel}
-              options={stateOptions} onChange={v => onChange({ ...data, state: v })} />
-          ) : (
-            <input id="state" type="text" autoComplete="address-level1"
-              placeholder={cfg.stateLabel} value={data.state} onChange={set("state")} className={inputCls} />
-          )}
-        </Field>
+        {!cfg.hideState && (
+          <Field id="state" label={cfg.stateLabel}>
+            {cfg.states ? (
+              <Combobox id="state" value={data.state} placeholder={cfg.stateLabel}
+                options={stateOptions} onChange={v => onChange({ ...data, state: v })} />
+            ) : (
+              <input id="state" type="text" autoComplete="address-level1"
+                placeholder={cfg.stateLabel} value={data.state} onChange={set("state")} className={inputCls} />
+            )}
+          </Field>
+        )}
       </div>
 
       <Field id="zip" label={cfg.zipLabel}>
