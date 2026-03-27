@@ -596,6 +596,19 @@ export default function Page() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [postcardPhoto, setPostcardPhoto] = useState("/postcard-photos/will.webp");
+
+  useEffect(() => {
+    fetch("/api/postcard-photos")
+      .then(r => r.json())
+      .then((d: { photos?: string[] }) => {
+        const photos = d.photos ?? [];
+        if (photos.length > 0) {
+          setPostcardPhoto(photos[Math.floor(Math.random() * photos.length)]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   function flip() {
     if (flipState !== "front") return;
@@ -675,7 +688,7 @@ export default function Page() {
             {/* Photo strip */}
             <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/7" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/will.jpg" alt="" className="w-full h-full object-cover object-center"
+              <img src={postcardPhoto} alt="" className="w-full h-full object-cover object-center"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
               {/* Gradient scrim at bottom */}
