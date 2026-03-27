@@ -754,7 +754,7 @@ export default function Page() {
               </p>
               <p>
                 I&rsquo;d love to send it to people who&rsquo;ve made an impact on
-                my life &mdash; you! Fill out your details below and I&rsquo;ll send
+                my life &mdash; including you! Fill out your details below and I&rsquo;ll send
                 you a card in May.
               </p>
               <p className="pt-1">&mdash;Will</p>
