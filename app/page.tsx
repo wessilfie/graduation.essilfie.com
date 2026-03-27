@@ -333,7 +333,7 @@ function Combobox({
                   onMouseDown={() => select(opt)}
                   className={`w-full text-left px-3.5 py-2.5 text-sm transition-colors ${
                     opt.value === value
-                      ? "bg-[#003DA5]/[0.07] text-[#003DA5] font-medium"
+                      ? "bg-[#75B2DD]/[0.07] text-[#75B2DD] font-medium"
                       : "text-stone-700 hover:bg-stone-50"
                   }`}
                 >
@@ -357,7 +357,7 @@ function Combobox({
 const inputCls =
   "w-full px-3.5 py-2.5 text-sm bg-white border border-stone-200 rounded-md " +
   "text-stone-900 placeholder:text-stone-400 focus:outline-none " +
-  "focus:ring-2 focus:ring-[#003DA5]/40 focus:border-[#003DA5]/60 transition-shadow";
+  "focus:ring-2 focus:ring-[#75B2DD]/40 focus:border-[#75B2DD]/60 transition-shadow";
 
 // ---------------------------------------------------------------------------
 // Field wrapper
@@ -373,7 +373,7 @@ function Field({
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="flex items-baseline gap-1.5 text-xs font-medium text-stone-500">
         {label}
-        {required && <span className="text-[#003DA5]">*</span>}
+        {required && <span className="text-[#75B2DD]">*</span>}
         {hint && <span className="font-normal text-stone-400">{hint}</span>}
       </label>
       {children}
@@ -394,7 +394,7 @@ function Toggle({ id, checked, onChange, label }: {
       <button
         id={id} role="switch" aria-checked={checked} type="button"
         onClick={() => onChange(!checked)}
-        className={`relative rounded-full shrink-0 focus:outline-none focus:ring-2 focus:ring-[#003DA5]/40 focus:ring-offset-1 transition-colors ${checked ? "bg-[#003DA5]" : "bg-stone-200"}`}
+        className={`relative rounded-full shrink-0 focus:outline-none focus:ring-2 focus:ring-[#75B2DD]/40 focus:ring-offset-1 transition-colors ${checked ? "bg-[#75B2DD]" : "bg-stone-200"}`}
         style={{ width: 40, height: 22 }}
       >
         <span className="absolute top-0.5 bg-white rounded-full shadow-sm transition-all"
@@ -416,7 +416,7 @@ function StepDots({ current }: { current: 1 | 2 | 3 }) {
         <div key={n} className="rounded-full transition-all"
           style={{
             width: n === current ? 20 : 8, height: 8,
-            backgroundColor: n <= current ? "#003DA5" : "#E7E2DA",
+            backgroundColor: n <= current ? "#75B2DD" : "#E7E2DA",
           }} />
       ))}
     </div>
@@ -525,7 +525,7 @@ function FormStep({ data, errors, onChange, onContinue }: {
       )}
 
       <button type="button" onClick={onContinue}
-        className="w-full py-3 bg-[#003DA5] text-white text-sm font-semibold rounded-md hover:bg-[#002d80] active:bg-[#002570] transition-colors mt-2">
+        className="w-full py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] active:bg-[#4A8DB8] transition-colors mt-2">
         This looks good &rarr;
       </button>
     </div>
@@ -556,7 +556,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
   return (
     <div className="form-unfold space-y-5">
       <div>
-        <p className="font-fraunces text-[18px] font-semibold text-stone-800">Does this look right?</p>
+        <p className="text-[18px] font-semibold text-stone-800">Does this look right?</p>
         <p className="text-xs text-stone-400 mt-0.5">Take a quick look before I send it your way.</p>
       </div>
 
@@ -578,7 +578,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
           Edit
         </button>
         <button type="button" onClick={onConfirm} disabled={submitting}
-          className="flex-[2] py-3 bg-[#003DA5] text-white text-sm font-semibold rounded-md hover:bg-[#002d80] disabled:opacity-50 transition-colors">
+          className="flex-[2] py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] disabled:opacity-50 transition-colors">
           {submitting ? "Sending…" : "This looks good →"}
         </button>
       </div>
@@ -600,7 +600,7 @@ function ConfirmationStep() {
         </div>
       </div>
 
-      <div className="font-fraunces space-y-1">
+      <div className="space-y-1">
         <p className="text-stone-800 text-[16px] leading-relaxed">
           Thanks for filling out your info! I can&rsquo;t wait to send you this card.
           Chat soon,
@@ -693,7 +693,7 @@ export default function Page() {
       <CbsBackground />
       <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div
-        className={`w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
+        className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
           backgroundColor: "#FAFAF7",
           boxShadow: [
@@ -736,7 +736,7 @@ export default function Page() {
               {/* From */}
               <div className="flex-[5] px-5 py-4">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">From</p>
-                <p className="font-fraunces font-semibold text-[14px] text-stone-800 leading-snug">
+                <p className="font-semibold text-[14px] text-stone-800 leading-snug">
                   Will Essilfie
                 </p>
                 <p className="text-[11px] text-stone-400 mt-1 leading-snug">
@@ -750,7 +750,7 @@ export default function Page() {
               {/* To — "You!" */}
               <div className="flex-[5] px-5 py-4 flex flex-col justify-center">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">To</p>
-                <p className="font-fraunces font-semibold text-[26px] leading-none text-stone-800">
+                <p className="font-semibold text-[26px] leading-none text-stone-800">
                   You!
                 </p>
                 <p className="text-[10.5px] text-stone-400 mt-1.5 leading-snug">
@@ -778,7 +778,7 @@ export default function Page() {
             )}
 
             {/* Letter body — hidden on review + confirmation */}
-            <div className={`font-fraunces space-y-3.5 text-[15.5px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`}>
+            <div className={`space-y-3.5 text-[15.5px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`}>
               <p>Hey there!</p>
               <p>
                 I&rsquo;m graduating from Columbia in May with my MBA. As I prepare
