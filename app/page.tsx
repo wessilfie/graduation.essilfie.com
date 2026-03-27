@@ -629,51 +629,6 @@ export default function Page() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // ── Drag-to-flip state ───────────────────────────
-  const [dragX, setDragX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isSnapping, setIsSnapping] = useState(false);
-  const dragStartX = useRef(0);
-  const dragXRef = useRef(0);
-
-  useEffect(() => {
-    if (!isDragging) return;
-    function onMove(e: MouseEvent) {
-      const dx = e.clientX - dragStartX.current;
-      dragXRef.current = dx;
-      setDragX(dx);
-    }
-    function onUp() {
-      setIsDragging(false);
-      if (Math.abs(dragXRef.current) > 90) {
-        dragXRef.current = 0;
-        setDragX(0);
-        flip();
-      } else {
-        setIsSnapping(true);
-        setDragX(0);
-        dragXRef.current = 0;
-        setTimeout(() => setIsSnapping(false), 380);
-      }
-    }
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDragging]);
-
-  function startDrag(clientX: number, target: EventTarget | null) {
-    if (flipState !== "front" && flipState !== "back") return;
-    if ((target as HTMLElement)?.closest("input, select, button, textarea, [role='switch']")) return;
-    setIsDragging(true);
-    setIsSnapping(false);
-    dragStartX.current = clientX;
-    dragXRef.current = 0;
-  }
-
   function flip() {
     if (flipState !== "front") return;
     setFlipState("flip-out");
@@ -733,42 +688,13 @@ export default function Page() {
     flipState === "front"    ? "card-arrive" :
     "";
 
-  // During drag: live rotateY; during snap-back: transition back to 0
-  const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
-  const dragRotate = clamp(-(dragX / 160) * 90, -90, 90);
-  const dragStyle: React.CSSProperties = isDragging
-    ? { transform: `perspective(1400px) rotateY(${dragRotate}deg)`, transition: "none", cursor: "grabbing" }
-    : isSnapping
-    ? { transform: "perspective(1400px) rotateY(0deg)", transition: "transform 0.38s cubic-bezier(0.22,1,0.36,1)" }
-    : {};
-  const effectiveAnimClass = isDragging || isSnapping ? "" : animClass;
-
   return (
     <>
       <CbsBackground />
       <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div
-        onMouseDown={(e) => startDrag(e.clientX, e.target)}
-        onTouchStart={(e) => startDrag(e.touches[0].clientX, e.target)}
-        onTouchMove={(e) => {
-          if (!isDragging) return;
-          const dx = e.touches[0].clientX - dragStartX.current;
-          dragXRef.current = dx;
-          setDragX(dx);
-        }}
-        onTouchEnd={() => {
-          if (!isDragging) return;
-          setIsDragging(false);
-          if (Math.abs(dragXRef.current) > 90) {
-            dragXRef.current = 0; setDragX(0); flip();
-          } else {
-            setIsSnapping(true); setDragX(0); dragXRef.current = 0;
-            setTimeout(() => setIsSnapping(false), 380);
-          }
-        }}
-        className={`w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative select-none ${effectiveAnimClass}`}
+        className={`w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
-          ...dragStyle,
           backgroundColor: "#FAFAF7",
           boxShadow: [
             "0 1px 2px rgba(0,0,0,0.12)",
@@ -818,8 +744,7 @@ export default function Page() {
               {/* From */}
               <div className="flex-[5] px-5 py-4">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">From</p>
-                <p className="text-[13.5px] text-stone-800 leading-snug"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                <p className="text-[13px] font-semibold text-stone-800 leading-snug">
                   Will Essilfie
                 </p>
                 <p className="text-[11px] text-stone-400 mt-1 leading-snug">
@@ -833,8 +758,7 @@ export default function Page() {
               {/* To — "You!" */}
               <div className="flex-[5] px-5 py-4 flex flex-col justify-center">
                 <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">To</p>
-                <p className="text-[26px] leading-none text-stone-700"
-                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                <p className="text-[24px] font-bold leading-none text-stone-800">
                   You!
                 </p>
                 <p className="text-[10.5px] text-stone-400 mt-1.5 leading-snug">
