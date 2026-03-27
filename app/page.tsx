@@ -267,12 +267,13 @@ function Postmark() {
 type ComboOption = { value: string; label: string };
 
 function Combobox({
-  id, value, onChange, options, placeholder = "Select…",
+  id, value, onChange, options, placeholder = "Select…", autoComplete = "off",
 }: {
   id: string; value: string;
   onChange: (v: string) => void;
   options: ComboOption[];
   placeholder?: string;
+  autoComplete?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -288,6 +289,14 @@ function Combobox({
   function handleBlur(e: React.FocusEvent) {
     if (listRef.current?.contains(e.relatedTarget as Node)) return;
     setOpen(false);
+    // Auto-select if typed/autofilled value matches an option
+    const q = query.trim().toLowerCase();
+    if (q) {
+      const match = options.find(
+        o => o.label.toLowerCase() === q || o.value.toLowerCase() === q
+      );
+      if (match) onChange(match.value);
+    }
     setQuery("");
   }
 
@@ -303,7 +312,7 @@ function Combobox({
         id={id}
         ref={inputRef}
         type="text"
-        autoComplete="off"
+        autoComplete={autoComplete}
         spellCheck={false}
         value={open ? query : (selected?.label ?? "")}
         onChange={e => setQuery(e.target.value)}
@@ -383,24 +392,6 @@ function Field({
 }
 
 // ---------------------------------------------------------------------------
-// Step dots
-// ---------------------------------------------------------------------------
-
-function StepDots({ current }: { current: 1 | 2 | 3 }) {
-  return (
-    <div className="flex items-center justify-center gap-2 py-3">
-      {[1, 2, 3].map(n => (
-        <div key={n} className="rounded-full transition-all"
-          style={{
-            width: n === current ? 20 : 8, height: 8,
-            backgroundColor: n <= current ? "#75B2DD" : "#E7E2DA",
-          }} />
-      ))}
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Address fields
 // ---------------------------------------------------------------------------
 
@@ -417,6 +408,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
     <div className="space-y-3.5">
       <Field id="country" label="Country">
         <Combobox id="country" value={data.country} placeholder="Select country"
+          autoComplete="country-name"
           options={countryOptions}
           onChange={v => onChange({ ...data, country: v, state: "", zip: "" })} />
       </Field>
@@ -442,6 +434,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
           <Field id="state" label={cfg.stateLabel}>
             {cfg.states ? (
               <Combobox id="state" value={data.state} placeholder={cfg.stateLabel}
+                autoComplete="address-level1"
                 options={stateOptions} onChange={v => onChange({ ...data, state: v })} />
             ) : (
               <input id="state" type="text" autoComplete="address-level1"
@@ -499,7 +492,7 @@ function FormStep({ data, errors, onChange, onContinue }: {
 
       <button type="button" onClick={onContinue}
         className="w-full py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] active:bg-[#4A8DB8] transition-colors mt-2">
-        This looks good &rarr;
+        Review &amp; submit &rarr;
       </button>
     </div>
   );
@@ -554,7 +547,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
         </button>
         <button type="button" onClick={onConfirm} disabled={submitting}
           className="flex-[2] py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] disabled:opacity-50 transition-colors">
-          {submitting ? "Sending…" : "This looks good →"}
+          {submitting ? "Sending…" : "Confirm & send →"}
         </button>
       </div>
     </div>
@@ -666,7 +659,7 @@ export default function Page() {
   return (
     <>
       <CbsBackground />
-      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-start sm:justify-center px-4 py-12">
       <div
         className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
@@ -754,13 +747,12 @@ export default function Page() {
               </p>
               <p>
                 I&rsquo;d love to send it to people who&rsquo;ve made an impact on
-                my life &mdash; you! Fill out your details below and I&rsquo;ll send
+                my life &mdash; including you! Fill out your details below and I&rsquo;ll send
                 you a card in May.
               </p>
               <p className="pt-1">&mdash;Will</p>
             </div>
 
-            <StepDots current={step === "form" ? 1 : step === "review" ? 2 : 3} />
             <div className="border-t border-stone-100" />
 
             {step === "form" && (
