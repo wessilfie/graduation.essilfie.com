@@ -696,17 +696,8 @@ export default function Page() {
         className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
           backgroundColor: "#FAFAF7",
-          boxShadow: [
-            "0 1px 2px rgba(0,0,0,0.12)",
-            "0 3px 7px rgba(0,0,0,0.09)",
-            "0 10px 22px rgba(0,0,0,0.09)",
-            "0 30px 60px rgba(0,0,0,0.08)",
-            "inset 0 0 0 1px rgba(90,72,50,0.13)",
-            "inset 0 1px 2px rgba(255,255,255,0.6)",
-            "inset 0 -1px 3px rgba(0,0,0,0.07)",
-            "inset 3px 0 6px rgba(0,0,0,0.03)",
-            "inset -3px 0 6px rgba(0,0,0,0.03)",
-          ].join(", "),
+          border: "1px solid #E0DBD4",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.07), 0 10px 24px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.06)",
         }}
       >
 
