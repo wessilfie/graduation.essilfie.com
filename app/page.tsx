@@ -691,15 +691,33 @@ export default function Page() {
   return (
     <>
       <CbsBackground />
-    <main className="relative z-10 min-h-screen flex items-center justify-center px-4 py-10">
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div
-        className={`w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[660px] rounded-[4px] overflow-hidden ${animClass}`}
+        className={`w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
           backgroundColor: "#FAFAF7",
-          border: "1px solid #E0DBD4",
-          boxShadow: "0 1px 2px rgba(0,0,0,0.05), 0 4px 14px rgba(0,0,0,0.08), 0 14px 36px rgba(0,0,0,0.06)",
+          boxShadow: [
+            "0 1px 2px rgba(0,0,0,0.12)",
+            "0 3px 7px rgba(0,0,0,0.09)",
+            "0 10px 22px rgba(0,0,0,0.09)",
+            "0 30px 60px rgba(0,0,0,0.08)",
+            "inset 0 0 0 1px rgba(90,72,50,0.13)",
+            "inset 0 1px 2px rgba(255,255,255,0.6)",
+            "inset 0 -1px 3px rgba(0,0,0,0.07)",
+            "inset 3px 0 6px rgba(0,0,0,0.03)",
+            "inset -3px 0 6px rgba(0,0,0,0.03)",
+          ].join(", "),
         }}
       >
+        {/* Paper aging overlay — always present */}
+        <div className="absolute inset-0 pointer-events-none z-10 rounded-[3px]"
+          style={{
+            background: [
+              "radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(90,70,45,0.10) 100%)",
+              "linear-gradient(to bottom, rgba(0,0,0,0.03) 0%, transparent 8%, transparent 92%, rgba(0,0,0,0.04) 100%)",
+            ].join(", "),
+          }} />
+
         {/* ── FRONT FACE ── */}
         {(flipState === "front" || flipState === "flip-out") && (
           <>
@@ -709,36 +727,46 @@ export default function Page() {
               <img src="/will.jpg" alt="" className="w-full h-full object-cover object-center"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
-              {/* Gradient scrim at bottom for logo legibility */}
+              {/* Gradient scrim at bottom */}
               <div className="absolute inset-x-0 bottom-0 h-16"
-                style={{ background: "linear-gradient(to top, rgba(0,0,0,0.35), transparent)" }} />
+                style={{ background: "linear-gradient(to top, rgba(0,0,0,0.38), transparent)" }} />
 
               {/* CBS logo — bottom left */}
               <div className="absolute bottom-3 left-4">
                 <Image src="/cbs-logo.png" alt="Columbia Business School"
-                  width={70} height={27} className="brightness-0 invert opacity-90"
+                  width={70} height={27} className="brightness-0 invert opacity-85"
                   style={{ objectFit: "contain" }} />
               </div>
+            </div>
 
+            {/* Postcard front — From / To section */}
+            <div className="flex items-stretch" style={{ borderTop: "1px solid rgba(90,72,50,0.12)" }}>
+              {/* From */}
+              <div className="flex-[5] px-5 py-4">
+                <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-2">From</p>
+                <p className="text-[13.5px] text-stone-800 leading-snug"
+                  style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                  Will Essilfie
+                </p>
+                <p className="text-[11px] text-stone-400 mt-1 leading-snug">
+                  Columbia Business School<br />MBA ʼ26 · New York, NY
+                </p>
               </div>
 
-            {/* Click-to-open prompt */}
-            <button
-              type="button"
-              onClick={flip}
-              className="w-full flex items-center justify-between px-6 py-4 group"
-              style={{ backgroundColor: "#FAFAF7" }}
-            >
-              <span className="text-sm text-stone-500">
-                A note from <span className="text-stone-700 font-medium">Will Essilfie</span>
-              </span>
-              <span className="text-xs text-stone-400 group-hover:text-[#003DA5] transition-colors flex items-center gap-1">
-                Open
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path d="M5 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
-            </button>
+              {/* Divider */}
+              <div className="w-px self-stretch my-3" style={{ backgroundColor: "rgba(90,72,50,0.10)" }} />
+
+              {/* To — decorative postcard address lines */}
+              <div className="flex-[5] px-5 py-4 flex flex-col justify-center">
+                <p className="text-[9px] tracking-[0.14em] text-stone-400 uppercase font-semibold mb-3">To</p>
+                {[1, 1, 0.68].map((w, i) => (
+                  <div key={i} className="mb-3 last:mb-0" style={{
+                    width: `${w * 100}%`, height: 1,
+                    backgroundColor: "rgba(90,72,50,0.15)",
+                  }} />
+                ))}
+              </div>
+            </div>
           </>
         )}
 
@@ -789,7 +817,30 @@ export default function Page() {
           </div>
         )}
       </div>
-    </main>
+
+      {/* Flip hint — below the card, only while showing front */}
+      {(flipState === "front") && (
+        <button
+          type="button"
+          onClick={flip}
+          className="flip-hint mt-6 flex flex-col items-center gap-1.5 group"
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+            style={{ border: "1px solid rgba(90,72,50,0.22)", backgroundColor: "rgba(250,250,247,0.7)" }}>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-stone-500 group-hover:text-stone-700 transition-colors">
+              {/* Flip/rotate icon — two curved arrows */}
+              <path d="M3.5 9A5.5 5.5 0 0 1 14 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M14 3v2.5h-2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14.5 9A5.5 5.5 0 0 1 4 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M4 15v-2.5h2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <span className="text-[11px] tracking-wide text-stone-400 group-hover:text-stone-600 transition-colors">
+            flip to open
+          </span>
+        </button>
+      )}
+      </main>
     </>
   );
 }

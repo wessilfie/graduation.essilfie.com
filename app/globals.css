@@ -18,6 +18,13 @@ body {
 }
 .tile-img { animation: tileSwap 1s ease-out forwards; }
 
+/* ── Flip hint pulse ─────────────────────────────── */
+@keyframes flipHintBob {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%       { transform: translateY(-4px); opacity: 1; }
+}
+.flip-hint { animation: flipHintBob 2.2s ease-in-out 1.2s infinite; }
+
 /* ── Card arrive ──────────────────────────────── */
 @keyframes mailArrive {
   0%   { transform: translateY(110vh) rotate(-3deg); opacity: 0; }
