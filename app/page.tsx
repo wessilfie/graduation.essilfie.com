@@ -120,7 +120,6 @@ type FlipState = "front" | "flip-out" | "flip-in" | "back";
 interface FormData {
   name: string;
   email: string;
-  digitalOnly: boolean;
   country: string;
   street: string;
   street2: string;
@@ -132,7 +131,7 @@ interface FormData {
 type FieldErrors = Partial<Record<keyof FormData, string>>;
 
 const INITIAL: FormData = {
-  name: "", email: "", digitalOnly: false,
+  name: "", email: "",
   country: "US", street: "", street2: "", city: "", state: "", zip: "",
 };
 
@@ -383,29 +382,6 @@ function Field({
 }
 
 // ---------------------------------------------------------------------------
-// Toggle
-// ---------------------------------------------------------------------------
-
-function Toggle({ id, checked, onChange, label }: {
-  id: string; checked: boolean; onChange: (v: boolean) => void; label: string;
-}) {
-  return (
-    <label htmlFor={id} className="flex items-center gap-3 cursor-pointer select-none">
-      <button
-        id={id} role="switch" aria-checked={checked} type="button"
-        onClick={() => onChange(!checked)}
-        className={`relative rounded-full shrink-0 focus:outline-none focus:ring-2 focus:ring-[#75B2DD]/40 focus:ring-offset-1 transition-colors ${checked ? "bg-[#75B2DD]" : "bg-stone-200"}`}
-        style={{ width: 40, height: 22 }}
-      >
-        <span className="absolute top-0.5 bg-white rounded-full shadow-sm transition-all"
-          style={{ width: 18, height: 18, left: checked ? 20 : 2 }} />
-      </button>
-      <span className="text-sm text-stone-700">{label}</span>
-    </label>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Step dots
 // ---------------------------------------------------------------------------
 
@@ -506,23 +482,17 @@ function FormStep({ data, errors, onChange, onContinue }: {
 
       <div className="border-t border-stone-100 pt-0.5" />
 
-      <Toggle id="digital-only" checked={data.digitalOnly}
-        onChange={v => onChange({ ...data, digitalOnly: v })}
-        label="A digital card works for me" />
-
-      {!data.digitalOnly && (
-        <div className="space-y-3.5 pt-0.5">
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-stone-100" />
-            <span className="text-xs text-stone-400">Mailing address (optional)</span>
-            <div className="flex-1 h-px bg-stone-100" />
-          </div>
-          <AddressFields data={data} onChange={onChange} />
-          <p className="text-xs text-stone-400 pt-0.5">
-            I&rsquo;ll send a card to this address in May 2026.
-          </p>
+      <div className="space-y-3.5 pt-0.5">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-stone-100" />
+          <span className="text-xs text-stone-400">Mailing address (optional)</span>
+          <div className="flex-1 h-px bg-stone-100" />
         </div>
-      )}
+        <AddressFields data={data} onChange={onChange} />
+        <p className="text-xs text-stone-400 pt-0.5">
+          I&rsquo;ll send a card to this address in May 2026. Leave blank for digital only.
+        </p>
+      </div>
 
       <button type="button" onClick={onContinue}
         className="w-full py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] active:bg-[#4A8DB8] transition-colors mt-2">
@@ -563,12 +533,14 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
       <div className="bg-stone-50 rounded-md px-4 divide-y divide-stone-100">
         <ReviewRow label="Name" value={data.name} />
         <ReviewRow label="Email" value={data.email} />
-        <ReviewRow label="Card" value={data.digitalOnly ? "Digital only" : "Physical + digital"} />
-        {!data.digitalOnly && (
-          <ReviewRow label="Address"
-            value={[streetFull, cityLine, cfg.name].filter(Boolean).join(", ")} />
-        )}
+        <ReviewRow label="Mailing address"
+          value={[streetFull, cityLine, cfg.name].filter(Boolean).join(", ")} />
       </div>
+      {!streetFull && (
+        <p className="text-xs text-stone-400 -mt-2">
+          No address entered — I&rsquo;ll send you a digital card instead.
+        </p>
+      )}
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
 
@@ -663,7 +635,7 @@ export default function Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name, email: formData.email,
-          digitalOnly: formData.digitalOnly,
+          digitalOnly: !streetFull,
           street: streetFull || null,
           city: formData.city || null, state: formData.state || null,
           zip: formData.zip || null, country: cfg.name,
