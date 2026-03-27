@@ -797,6 +797,7 @@ export default function Page() {
                 my life &mdash; you! Fill out your details below and I&rsquo;ll send
                 you a card in May.
               </p>
+              <p className="pt-1">&mdash;Will</p>
             </div>
 
             <StepDots current={step === "form" ? 1 : step === "review" ? 2 : 3} />
