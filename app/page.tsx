@@ -838,17 +838,20 @@ export default function Page() {
 
             {/* Letter body — hidden on review + confirmation */}
             <div className={`space-y-3.5 text-[15.5px] text-stone-700 leading-[1.85] ${step !== "form" ? "hidden" : ""}`}>
-              <p>Hey there!</p>
+              <p>Hey there,</p>
               <p>
-                I&rsquo;m graduating from Columbia in May with my MBA. As I prepare
-                to wrap up this journey, I wanted to write a card reflecting on my
-                life till now, these past two years, and what I&rsquo;m looking
-                ahead to.
+                After two years managing work and school, I&rsquo;m graduating from
+                Columbia Business School with my MBA on May 16th.
               </p>
               <p>
-                I&rsquo;d love to send it to people who&rsquo;ve made an impact on
-                my life &mdash; including you! Fill out your details below and I&rsquo;ll send
-                you a card in May.
+                As I look ahead to graduation, I&rsquo;m sending a letter and postcard
+                reflecting on this experience and I want to send it to the people who
+                have supported me, mentored me, and been part of making this journey
+                possible. I&rsquo;d love to send you one.
+              </p>
+              <p>
+                Fill out your info below with a mailing address and I&rsquo;ll send
+                you a card in May 2026.
               </p>
               <p className="pt-1">&mdash;Will</p>
             </div>
