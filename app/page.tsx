@@ -535,8 +535,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
   return (
     <div className="form-unfold space-y-5">
       <div>
-        <p className="font-fraunces text-[26px] leading-tight text-stone-800">Does this look right?</p>
-        <p className="text-xs text-stone-400 mt-0.5">Take a quick look before I send it your way.</p>
+        <p className="font-fraunces text-[26px] leading-tight text-stone-800">Confirm and review your contact information</p>
       </div>
 
       <div className="bg-stone-50 rounded-md px-4 divide-y divide-stone-100">
