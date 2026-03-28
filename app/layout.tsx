@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   title: "Will Essilfie | MBA '26",
   description:
     "I'm graduating from Columbia Business School in May. Send me your address and I'll mail you my graduation card.",
+  authors: [{ name: "Will Essilfie" }],
   openGraph: {
     title: "Will Essilfie | MBA '26",
     description:
@@ -28,6 +29,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/postcardpics/postcard-13.jpg",
+        width: 1600,
+        height: 1061,
         alt: "Will Essilfie's Graduation Card",
       },
     ],
