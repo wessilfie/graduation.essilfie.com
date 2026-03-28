@@ -762,7 +762,9 @@ export default function Page() {
           backgroundColor: "#FAFAF7",
           border: "1px solid #E0DBD4",
           boxShadow: "0 2px 6px rgba(0,0,0,0.07), 0 10px 24px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.06)",
+          cursor: flipState === "front" ? "pointer" : undefined,
         }}
+        onClick={flipState === "front" ? flip : undefined}
       >
 
         {/* ── FRONT FACE ── */}
