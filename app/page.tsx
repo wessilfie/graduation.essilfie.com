@@ -672,7 +672,7 @@ export default function Page() {
   return (
     <>
       <CbsBackground />
-      <main className="relative z-10 min-h-screen flex flex-col items-center justify-start sm:justify-center px-4 py-12">
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
       <div
         className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
