@@ -374,7 +374,7 @@ function Combobox({
 // ---------------------------------------------------------------------------
 
 const inputCls =
-  "w-full px-3.5 py-2.5 text-sm bg-white border border-stone-200 rounded-md " +
+  "w-full px-3.5 py-2.5 text-[16px] sm:text-sm bg-white border border-stone-200 rounded-md " +
   "text-stone-900 placeholder:text-stone-400 focus:outline-none " +
   "focus:ring-2 focus:ring-[#75B2DD]/40 focus:border-[#75B2DD]/60 transition-shadow";
 
@@ -587,81 +587,78 @@ function ConfirmationStep({ data }: { data: FormData }) {
   }
 
   return (
-    // Fixed-height stage — both layers live here and crossfade
-    <div className="form-unfold" style={{ position: "relative", minHeight: 280 }}>
+    <div className="form-unfold space-y-4">
+      {/* Fixed-height crossfade stage */}
+      <div style={{ position: "relative", height: 240 }}>
 
-      {/* ── Lottie layer ─────────────────────────── */}
-      <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        transition: "opacity 0.55s ease-out",
-        opacity: done ? 0 : 1,
-        pointerEvents: done ? "none" : "auto",
-      }}>
-        <div style={{ position: "relative" }}>
-          <Lottie
-            animationData={sendMessageAnimation}
-            loop={false}
-            onComplete={handleComplete}
-            style={{ width: 220, height: 220 }}
-          />
-          {/* Name overlay — centered on the envelope card shape */}
-          <div style={{
-            position: "absolute",
-            top: "50%", left: "50%",
-            transform: "translate(-50%, -54%)",
-            textAlign: "center",
-            pointerEvents: "none",
-            transition: "opacity 0.35s ease-out",
-            opacity: nameVisible ? 1 : 0,
-          }}>
-            <p style={{
-              fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.92)",
-              maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+        {/* ── Lottie layer ─────────────────────────── */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "opacity 0.55s ease-out",
+          opacity: done ? 0 : 1,
+          pointerEvents: done ? "none" : "auto",
+        }}>
+          <div style={{ position: "relative" }}>
+            <Lottie
+              animationData={sendMessageAnimation}
+              loop={false}
+              onComplete={handleComplete}
+              style={{ width: 220, height: 220 }}
+            />
+            {/* Name overlay — centered on the envelope card shape */}
+            <div style={{
+              position: "absolute",
+              top: "50%", left: "50%",
+              transform: "translate(-50%, -54%)",
+              textAlign: "center",
+              pointerEvents: "none",
+              transition: "opacity 0.35s ease-out",
+              opacity: nameVisible ? 1 : 0,
             }}>
-              {data.name.split(" ")[0] || ""}
-            </p>
-            {data.city && (
               <p style={{
-                fontSize: 8, color: "rgba(255,255,255,0.7)", marginTop: 2,
+                fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.92)",
                 maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
-                {data.city}{data.state ? `, ${data.state}` : ""}
+                {data.name.split(" ")[0] || ""}
               </p>
-            )}
+              {data.city && (
+                <p style={{
+                  fontSize: 8, color: "rgba(255,255,255,0.7)", marginTop: 2,
+                  maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                }}>
+                  {data.city}{data.state ? `, ${data.state}` : ""}
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Thank-you layer ───────────────────────── */}
-      <div style={{
-        position: "absolute", inset: 0,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        textAlign: "center",
-        transition: "opacity 0.55s ease-out",
-        opacity: done ? 1 : 0,
-        pointerEvents: done ? "auto" : "none",
-      }}>
-        <p className="font-fraunces text-[42px] leading-tight text-stone-800 mb-3">Thanks!</p>
-        <p className="text-[15px] text-stone-600 leading-relaxed" style={{ maxWidth: 260 }}>
-          Can&rsquo;t wait to graduate and send you a card soon!
-        </p>
-
-        <p className="text-[15px] text-stone-700 mt-2">&mdash;Will</p>
-      </div>
-
-      {/* CBS logo — always at the bottom, fades in with done */}
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0,
-        transition: "opacity 0.55s ease-out",
-        opacity: done ? 1 : 0,
-        pointerEvents: "none",
-      }}>
-        <div className="pt-2 border-t border-stone-100">
-          <Image src="/cbs-logo.png" alt="Columbia Business School"
-            width={88} height={34} className="opacity-35"
-            style={{ objectFit: "contain", objectPosition: "left" }} />
+        {/* ── Thank-you layer ───────────────────────── */}
+        <div style={{
+          position: "absolute", inset: 0,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          textAlign: "center",
+          transition: "opacity 0.55s ease-out",
+          opacity: done ? 1 : 0,
+          pointerEvents: done ? "auto" : "none",
+        }}>
+          <p className="font-fraunces text-[42px] leading-tight text-stone-800 mb-3">Thanks!</p>
+          <p className="text-[15px] text-stone-600 leading-relaxed" style={{ maxWidth: 260 }}>
+            Can&rsquo;t wait to graduate and send you a card soon!
+          </p>
+          <p className="text-[15px] text-stone-700 mt-2">&mdash;Will</p>
         </div>
+      </div>
+
+      {/* CBS logo — in normal flow below the stage, fades in with done */}
+      <div className="pt-2 border-t border-stone-100" style={{
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 1 : 0,
+      }}>
+        <Image src="/cbs-logo.png" alt="Columbia Business School"
+          width={88} height={34} className="opacity-35"
+          style={{ objectFit: "contain", objectPosition: "left" }} />
       </div>
     </div>
   );
