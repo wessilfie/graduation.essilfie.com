@@ -18,6 +18,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://graduation.essilfie.com"),
   title: "Will Essilfie | MBA '26",
   description:
     "I'm graduating from Columbia Business School in May. Send me your address and I'll mail you my graduation card.",
@@ -34,6 +35,9 @@ export const metadata: Metadata = {
         alt: "Will Essilfie's Graduation Card",
       },
     ],
+  },
+  other: {
+    image: "https://graduation.essilfie.com/postcardpics/postcard-13.jpg",
   },
 };
 
