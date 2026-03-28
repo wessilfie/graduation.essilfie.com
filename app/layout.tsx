@@ -19,15 +19,15 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://graduation.essilfie.com"),
-  title: "Will Essilfie | MBA '26",
+  title: "Will's MBA Graduation Card",
   description:
     "I'm graduating from Columbia Business School in May. Send me your address and I'll mail you my graduation card.",
   authors: [{ name: "Will Essilfie" }],
   openGraph: {
     type: "website",
     url: "https://graduation.essilfie.com",
-    siteName: "Will Essilfie | MBA '26",
-    title: "Will Essilfie | MBA '26",
+    siteName: "graduation.essilfie.com",
+    title: "Will's MBA Graduation Card",
     description:
       "I'm graduating from Columbia Business School in May. Send me your address and I'll mail you my graduation card.",
     images: [
@@ -38,6 +38,13 @@ export const metadata: Metadata = {
         alt: "Will Essilfie's Graduation Card",
       },
     ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Will's MBA Graduation Card",
+    description:
+      "I'm graduating from Columbia Business School in May. Send me your address and I'll mail you my graduation card.",
+    images: ["https://graduation.essilfie.com/postcardpics/postcard-13.jpg"],
   },
   other: {
     image: "https://graduation.essilfie.com/postcardpics/postcard-13.jpg",
