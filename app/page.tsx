@@ -570,15 +570,9 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
 // Confirmation step
 // ---------------------------------------------------------------------------
 
-function ConfirmationStep({ data }: { data: FormData }) {
+function ConfirmationStep() {
   const [done, setDone] = useState(false);
-  const [nameVisible, setNameVisible] = useState(true);
   const completedRef = useRef(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setNameVisible(false), 500);
-    return () => clearTimeout(t);
-  }, []);
 
   function handleComplete() {
     if (completedRef.current) return;
@@ -599,39 +593,12 @@ function ConfirmationStep({ data }: { data: FormData }) {
           opacity: done ? 0 : 1,
           pointerEvents: done ? "none" : "auto",
         }}>
-          <div style={{ position: "relative" }}>
-            <Lottie
+          <Lottie
               animationData={sendMessageAnimation}
               loop={false}
               onComplete={handleComplete}
               style={{ width: 220, height: 220 }}
             />
-            {/* Name overlay — centered on the envelope card shape */}
-            <div style={{
-              position: "absolute",
-              top: "50%", left: "50%",
-              transform: "translate(-50%, -54%)",
-              textAlign: "center",
-              pointerEvents: "none",
-              transition: "opacity 0.35s ease-out",
-              opacity: nameVisible ? 1 : 0,
-            }}>
-              <p style={{
-                fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.92)",
-                maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-              }}>
-                {data.name.split(" ")[0] || ""}
-              </p>
-              {data.city && (
-                <p style={{
-                  fontSize: 8, color: "rgba(255,255,255,0.7)", marginTop: 2,
-                  maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                }}>
-                  {data.city}{data.state ? `, ${data.state}` : ""}
-                </p>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* ── Thank-you layer ───────────────────────── */}
@@ -864,7 +831,7 @@ export default function Page() {
                 onConfirm={handleSubmit} submitting={submitting} error={submitError} />
             )}
 
-            {step === "confirmation" && <ConfirmationStep data={formData} />}
+            {step === "confirmation" && <ConfirmationStep />}
           </div>
         )}
       </div>
