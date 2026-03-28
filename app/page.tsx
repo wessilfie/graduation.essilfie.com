@@ -268,6 +268,28 @@ function Postmark() {
   );
 }
 
+function Mailbox({ flagUp = false }: { flagUp?: boolean }) {
+  return (
+    <svg width="96" height="80" viewBox="0 0 96 80" fill="none" aria-hidden="true">
+      {/* Post */}
+      <rect x="42" y="58" width="10" height="22" rx="2" fill="#C4BAB0" />
+      {/* Body */}
+      <rect x="6" y="22" width="70" height="38" rx="7" fill="#E8E2DA" stroke="#C4BAB0" strokeWidth="1.2" />
+      {/* Dome top */}
+      <rect x="6" y="22" width="70" height="18" rx="7" fill="#D4CEC6" stroke="#C4BAB0" strokeWidth="1.2" />
+      {/* Mail slot */}
+      <rect x="16" y="27" width="50" height="4.5" rx="2" fill="#C4BAB0" opacity="0.5" />
+      {/* Door seam */}
+      <line x1="6" y1="46" x2="76" y2="46" stroke="#C4BAB0" strokeWidth="1" />
+      {/* Flag arm — pivots at left edge of <g> bounding box via transform-box: fill-box */}
+      <g className={flagUp ? "flag-raise" : undefined}>
+        <rect x="76" y="39" width="14" height="3" rx="1.5" fill="#B8B0A8" />
+        <rect x="86" y="31" width="11" height="10" rx="2" fill="#75B2DD" />
+      </g>
+    </svg>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Custom searchable combobox
 // ---------------------------------------------------------------------------
@@ -569,24 +591,113 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
 // Confirmation step
 // ---------------------------------------------------------------------------
 
-function ConfirmationStep() {
+function ConfirmationStep({ data }: { data: FormData }) {
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 400);
+    const t2 = setTimeout(() => setPhase(2), 1700);
+    const t3 = setTimeout(() => setPhase(3), 2500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+  }, []);
+
+  const hasAddress = Boolean(data.street.trim());
+  const streetFull = [data.street, data.street2].filter(Boolean).join(", ");
+  const cityLine   = [data.city, data.state, data.zip].filter(Boolean).join(", ");
+  const cfg = COUNTRY_MAP[data.country] ?? COUNTRY_MAP["OTHER"]!;
+  const fromLines = [data.name, ...(hasAddress ? [streetFull, cityLine, cfg.name] : [])].filter(Boolean);
+
   return (
     <div className="form-unfold space-y-6">
-      <div className="flex justify-center pt-2">
-        <div className="relative">
-          <div className="opacity-20"><Stamp /></div>
-          <div className="absolute -top-2 -right-4 stamp-thud"><Postmark /></div>
+
+      {/* Animation stage: mini postcard + mailbox */}
+      <div className="flex flex-col items-center pt-2">
+
+        {/* Mini postcard — hidden once thank-you text shows */}
+        {phase < 3 && (
+          <div
+            className={phase === 2 ? "card-drop" : undefined}
+            style={{ width: "min(260px, 85vw)", position: "relative" }}
+          >
+            <div style={{
+              border: "1px solid #E0DBD4", borderRadius: 3,
+              backgroundColor: "#FAFAF7", overflow: "hidden",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.09)",
+            }}>
+              {/* Photo strip */}
+              <div style={{ height: 18, backgroundColor: "#D4CFC8" }} />
+
+              {/* Stamp — absolute top-right, scaled down */}
+              <div style={{
+                position: "absolute", top: 4, right: 4,
+                transform: "scale(0.28)", transformOrigin: "top right", opacity: 0.9,
+              }}>
+                <Stamp />
+              </div>
+
+              {/* From / To columns */}
+              <div style={{ display: "flex" }}>
+                {/* From — recipient's name & address, stagger-revealed */}
+                <div style={{ flex: 1, padding: "8px 6px 8px 10px" }}>
+                  <p style={{ fontSize: 6, letterSpacing: "0.12em", textTransform: "uppercase",
+                               color: "#A8A29E", fontWeight: 700, marginBottom: 4 }}>From</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {fromLines.map((line, i) => (
+                      <p key={i}
+                         className={phase >= 1 ? "line-reveal" : undefined}
+                         style={{
+                           fontSize: i === 0 ? 8 : 7,
+                           fontWeight: i === 0 ? 700 : 400,
+                           color: i === 0 ? "#44403C" : "#A8A29E",
+                           lineHeight: 1.35,
+                           opacity: phase >= 1 ? undefined : 0,
+                           animationDelay: phase >= 1 ? `${i * 150}ms` : undefined,
+                           animationFillMode: "both",
+                         }}>
+                        {line}
+                      </p>
+                    ))}
+                    {!hasAddress && [0, 1, 2].map(i => (
+                      <div key={i} style={{ height: 1, backgroundColor: "#E7E5E4",
+                                            marginTop: 4, borderRadius: 1, opacity: 0.7 }} />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div style={{ width: 1, backgroundColor: "rgba(90,72,50,0.08)", margin: "6px 0" }} />
+
+                {/* To — Will Essilfie, always visible */}
+                <div style={{ flex: 1, padding: "8px 8px 8px 8px" }}>
+                  <p style={{ fontSize: 6, letterSpacing: "0.12em", textTransform: "uppercase",
+                               color: "#A8A29E", fontWeight: 700, marginBottom: 4 }}>To</p>
+                  <p style={{ fontSize: 8, fontWeight: 700, color: "#44403C", lineHeight: 1.3 }}>
+                    Will Essilfie
+                  </p>
+                  <p style={{ fontSize: 7, color: "#A8A29E", lineHeight: 1.4, marginTop: 2 }}>
+                    New York, NY
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Mailbox flagUp={phase >= 2} />
+      </div>
+
+      {/* Thank-you text — fades in after card drops */}
+      {phase >= 3 && (
+        <div className="thank-you-reveal space-y-1">
+          <p className="text-stone-800 text-[16px] leading-relaxed">
+            Thanks for filling out your info! I can&rsquo;t wait to send you this card.
+            Chat soon,
+          </p>
+          <p className="text-stone-800 font-semibold text-[16px]">Will</p>
         </div>
-      </div>
+      )}
 
-      <div className="space-y-1">
-        <p className="text-stone-800 text-[16px] leading-relaxed">
-          Thanks for filling out your info! I can&rsquo;t wait to send you this card.
-          Chat soon,
-        </p>
-        <p className="text-stone-800 font-semibold text-[16px]">Will</p>
-      </div>
-
+      {/* CBS logo */}
       <div className="pt-2 border-t border-stone-100">
         <Image src="/cbs-logo.png" alt="Columbia Business School"
           width={88} height={34} className="opacity-35"
@@ -611,6 +722,14 @@ export default function Page() {
 
   useEffect(() => {
     setPostcardImg(POSTCARD_IMAGES[Math.floor(Math.random() * POSTCARD_IMAGES.length)]);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("preview") === "confirmation") {
+      setFlipState("back");
+      setStep("confirmation");
+    }
   }, []);
 
   function flip() {
@@ -781,7 +900,7 @@ export default function Page() {
                 onConfirm={handleSubmit} submitting={submitting} error={submitError} />
             )}
 
-            {step === "confirmation" && <ConfirmationStep />}
+            {step === "confirmation" && <ConfirmationStep data={formData} />}
           </div>
         )}
       </div>
