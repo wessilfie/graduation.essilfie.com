@@ -683,15 +683,15 @@ export default function Page() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const streetFull = [formData.street, formData.street2].filter(Boolean).join(", ");
       const cfg = COUNTRY_MAP[formData.country] ?? COUNTRY_MAP["OTHER"]!;
       const res = await fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name, email: formData.email,
-          digitalOnly: !streetFull,
-          street: streetFull || null,
+          digitalOnly: !formData.street.trim(),
+          street: formData.street.trim() || null,
+          street2: formData.street2.trim() || null,
           city: formData.city || null, state: formData.state || null,
           zip: formData.zip || null, country: cfg.name,
         }),
