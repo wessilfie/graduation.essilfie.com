@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Lottie from "lottie-react";
 import { useEffect, useRef, useState } from "react";
+import sendMessageAnimation from "../public/send-message.json";
 
 // ---------------------------------------------------------------------------
 // Country config
@@ -268,33 +270,6 @@ function Postmark() {
   );
 }
 
-function Mailbox({ flagUp = false }: { flagUp?: boolean }) {
-  return (
-    <svg width="130" height="110" viewBox="0 0 130 110" fill="none" aria-hidden="true">
-      {/* Post */}
-      <rect x="53" y="76" width="14" height="30" rx="3" fill="#C4BAB0"/>
-      {/* Main body: dome arch top + rectangular lower section, single closed path */}
-      {/* Arc: from (20,54) sweeping upward (sweep=0) to (100,54), rx=40 ry=22 = half-ellipse dome */}
-      <path d="M 20,76 L 20,54 A 40,22 0 0,0 100,54 L 100,76 Z"
-            fill="#DDD8D0" stroke="#C4BAB0" strokeWidth="1.5" strokeLinejoin="round"/>
-      {/* Lower body panel — slight darkening to distinguish from dome */}
-      <rect x="20" y="62" width="80" height="14" fill="rgba(0,0,0,0.06)"/>
-      {/* Dome highlight */}
-      <path d="M 30,46 A 30,16 0 0,0 90,46"
-            fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round"/>
-      {/* Mail slot */}
-      <rect x="30" y="56" width="52" height="5.5" rx="2.5" fill="rgba(60,40,20,0.18)"/>
-      {/* Panel seam line */}
-      <line x1="20" y1="62" x2="100" y2="62" stroke="rgba(90,72,50,0.12)" strokeWidth="1"/>
-      {/* Flag arm + flag — starts horizontal (down), raises to ~-78° (up) on flagUp */}
-      <g className={flagUp ? "flag-raise" : undefined}>
-        <rect x="100" y="61" width="20" height="4" rx="2" fill="#B8B0A8"/>
-        <rect x="116" y="51" width="14" height="11" rx="2" fill="#75B2DD"/>
-      </g>
-    </svg>
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Custom searchable combobox
 // ---------------------------------------------------------------------------
@@ -449,7 +424,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
       </Field>
 
       <Field id="street" label="Street address">
-        <input id="street" type="text" autoComplete="street-address"
+        <input id="street" type="text" autoComplete="address-line1"
           placeholder={cfg.streetPlaceholder} value={data.street} onChange={set("street")}
           className={inputCls} />
       </Field>
@@ -560,7 +535,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
   return (
     <div className="form-unfold space-y-5">
       <div>
-        <p className="text-[18px] font-semibold text-stone-800">Does this look right?</p>
+        <p className="font-fraunces text-[26px] leading-tight text-stone-800">Does this look right?</p>
         <p className="text-xs text-stone-400 mt-0.5">Take a quick look before I send it your way.</p>
       </div>
 
@@ -597,118 +572,97 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
 // ---------------------------------------------------------------------------
 
 function ConfirmationStep({ data }: { data: FormData }) {
-  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
+  const [done, setDone] = useState(false);
+  const [nameVisible, setNameVisible] = useState(true);
+  const completedRef = useRef(false);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 600);
-    const t2 = setTimeout(() => setPhase(2), 2800);
-    const t3 = setTimeout(() => setPhase(3), 4200);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
+    const t = setTimeout(() => setNameVisible(false), 500);
+    return () => clearTimeout(t);
   }, []);
 
-  const hasAddress = Boolean(data.street.trim());
-  const streetFull = [data.street, data.street2].filter(Boolean).join(", ");
-  const cityLine   = [data.city, data.state, data.zip].filter(Boolean).join(", ");
-  const cfg = COUNTRY_MAP[data.country] ?? COUNTRY_MAP["OTHER"]!;
-  const fromLines = [data.name, ...(hasAddress ? [streetFull, cityLine, cfg.name] : [])].filter(Boolean);
+  function handleComplete() {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    setDone(true);
+  }
 
   return (
-    <div className="form-unfold space-y-6">
+    // Fixed-height stage — both layers live here and crossfade
+    <div className="form-unfold" style={{ position: "relative", minHeight: 280 }}>
 
-      {/* Animation stage: mini postcard + mailbox */}
-      <div className="flex flex-col items-center pt-2">
-
-        {/* Mini postcard — hidden once thank-you text shows */}
-        {phase < 3 && (
-          <div
-            className={phase === 2 ? "card-drop" : undefined}
-            style={{ width: "min(260px, 85vw)", position: "relative" }}
-          >
-            <div style={{
-              border: "1px solid #E0DBD4", borderRadius: 3,
-              backgroundColor: "#FAFAF7", overflow: "hidden",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.09)",
+      {/* ── Lottie layer ─────────────────────────── */}
+      <div style={{
+        position: "absolute", inset: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 0 : 1,
+        pointerEvents: done ? "none" : "auto",
+      }}>
+        <div style={{ position: "relative" }}>
+          <Lottie
+            animationData={sendMessageAnimation}
+            loop={false}
+            onComplete={handleComplete}
+            style={{ width: 220, height: 220 }}
+          />
+          {/* Name overlay — centered on the envelope card shape */}
+          <div style={{
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%, -54%)",
+            textAlign: "center",
+            pointerEvents: "none",
+            transition: "opacity 0.35s ease-out",
+            opacity: nameVisible ? 1 : 0,
+          }}>
+            <p style={{
+              fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.92)",
+              maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
             }}>
-              {/* Photo strip */}
-              <div style={{ height: 18, backgroundColor: "#D4CFC8" }} />
-
-              {/* Stamp — absolute top-right, scaled down */}
-              <div style={{
-                position: "absolute", top: 4, right: 4,
-                transform: "scale(0.28)", transformOrigin: "top right", opacity: 0.9,
+              {data.name.split(" ")[0] || ""}
+            </p>
+            {data.city && (
+              <p style={{
+                fontSize: 8, color: "rgba(255,255,255,0.7)", marginTop: 2,
+                maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
               }}>
-                <Stamp />
-              </div>
-
-              {/* From / To columns */}
-              <div style={{ display: "flex" }}>
-                {/* From — recipient's name & address, stagger-revealed */}
-                <div style={{ flex: 1, padding: "8px 6px 8px 10px" }}>
-                  <p style={{ fontSize: 6, letterSpacing: "0.12em", textTransform: "uppercase",
-                               color: "#A8A29E", fontWeight: 700, marginBottom: 4 }}>From</p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                    {fromLines.map((line, i) => (
-                      <p key={i}
-                         className={phase >= 1 ? "line-reveal" : undefined}
-                         style={{
-                           fontSize: i === 0 ? 8 : 7,
-                           fontWeight: i === 0 ? 700 : 400,
-                           color: i === 0 ? "#44403C" : "#A8A29E",
-                           lineHeight: 1.35,
-                           opacity: phase >= 1 ? undefined : 0,
-                           animationDelay: phase >= 1 ? `${i * 150}ms` : undefined,
-                           animationFillMode: "both",
-                         }}>
-                        {line}
-                      </p>
-                    ))}
-                    {!hasAddress && [0, 1, 2].map(i => (
-                      <div key={i} style={{ height: 1, backgroundColor: "#E7E5E4",
-                                            marginTop: 4, borderRadius: 1, opacity: 0.7 }} />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Divider */}
-                <div style={{ width: 1, backgroundColor: "rgba(90,72,50,0.08)", margin: "6px 0" }} />
-
-                {/* To — Will Essilfie, always visible */}
-                <div style={{ flex: 1, padding: "8px 8px 8px 8px" }}>
-                  <p style={{ fontSize: 6, letterSpacing: "0.12em", textTransform: "uppercase",
-                               color: "#A8A29E", fontWeight: 700, marginBottom: 4 }}>To</p>
-                  <p style={{ fontSize: 8, fontWeight: 700, color: "#44403C", lineHeight: 1.3 }}>
-                    Will Essilfie
-                  </p>
-                  <p style={{ fontSize: 7, color: "#A8A29E", lineHeight: 1.4, marginTop: 2 }}>
-                    New York, NY
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <Mailbox flagUp={phase >= 2} />
-      </div>
-
-      {/* Thank-you text — fades in after card drops */}
-      {phase >= 3 && (
-        <div className="thank-you-reveal space-y-4">
-          <p className="text-stone-800 text-[16px] leading-relaxed">
-            Thanks for filling out your info! I can&rsquo;t wait to send you this card.
-          </p>
-          <div className="space-y-0.5">
-            <p className="text-stone-800 text-[16px]">Best,</p>
-            <p className="text-stone-800 font-semibold text-[16px]">Will</p>
+                {data.city}{data.state ? `, ${data.state}` : ""}
+              </p>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
-      {/* CBS logo */}
-      <div className="pt-2 border-t border-stone-100">
-        <Image src="/cbs-logo.png" alt="Columbia Business School"
-          width={88} height={34} className="opacity-35"
-          style={{ objectFit: "contain", objectPosition: "left" }} />
+      {/* ── Thank-you layer ───────────────────────── */}
+      <div style={{
+        position: "absolute", inset: 0,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        textAlign: "center",
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 1 : 0,
+        pointerEvents: done ? "auto" : "none",
+      }}>
+        <p className="font-fraunces text-[42px] leading-tight text-stone-800 mb-3">Thanks!</p>
+        <p className="text-[15px] text-stone-600 leading-relaxed" style={{ maxWidth: 260 }}>
+          Can&rsquo;t wait to graduate and send you a card soon!
+        </p>
+
+        <p className="text-[15px] text-stone-700 mt-2">&mdash;Will</p>
+      </div>
+
+      {/* CBS logo — always at the bottom, fades in with done */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 1 : 0,
+        pointerEvents: "none",
+      }}>
+        <div className="pt-2 border-t border-stone-100">
+          <Image src="/cbs-logo.png" alt="Columbia Business School"
+            width={88} height={34} className="opacity-35"
+            style={{ objectFit: "contain", objectPosition: "left" }} />
+        </div>
       </div>
     </div>
   );
@@ -865,13 +819,15 @@ export default function Page() {
         {/* ── BACK FACE ── */}
         {(flipState === "flip-in" || flipState === "back") && (
           <div className="px-6 pt-6 pb-7 space-y-5">
-            {/* Letter header — date + stamp, on form and review steps */}
+            {/* Letter header — stamp always, date only on form */}
             {(step === "form" || step === "review") && (
               <div className="flex items-start justify-between gap-4">
-                <div className="pt-1">
-                  <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
-                  <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
-                </div>
+                {step === "form" ? (
+                  <div className="pt-1">
+                    <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
+                    <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
+                  </div>
+                ) : <div />}
                 <div className="shrink-0">
                   <Stamp />
                 </div>
@@ -895,7 +851,7 @@ export default function Page() {
               <p className="pt-1">&mdash;Will</p>
             </div>
 
-            <div className="border-t border-stone-100" />
+            {step === "form" && <div className="border-t border-stone-100" />}
 
             {step === "form" && (
               <FormStep data={formData} errors={errors} onChange={setFormData}
