@@ -686,9 +686,9 @@ export default function Page() {
         {(flipState === "front" || flipState === "flip-out") && (
           <>
             {/* Photo strip */}
-            <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/7" }}>
+            <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/9" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-top"
+              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover" style={{ objectPosition: "center 30%" }}
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
               {/* Gradient scrim at bottom */}
