@@ -886,7 +886,7 @@ export default function Page() {
             </svg>
           </div>
           <span className="text-[11px] tracking-wide text-stone-400 group-hover:text-stone-600 transition-colors">
-            flip to open
+            Flip to open
           </span>
         </button>
       )}
