@@ -142,7 +142,7 @@ const INITIAL: FormData = {
 // Postcard photo pool
 // ---------------------------------------------------------------------------
 
-const POSTCARD_IMAGES = Array.from({ length: 21 }, (_, i) =>
+const POSTCARD_IMAGES = Array.from({ length: 25 }, (_, i) =>
   `postcard-${String(i + 1).padStart(2, "0")}.jpg`
 );
 
