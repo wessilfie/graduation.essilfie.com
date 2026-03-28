@@ -137,6 +137,14 @@ const INITIAL: FormData = {
 };
 
 // ---------------------------------------------------------------------------
+// Postcard photo pool
+// ---------------------------------------------------------------------------
+
+const POSTCARD_IMAGES = Array.from({ length: 21 }, (_, i) =>
+  `postcard-${String(i + 1).padStart(2, "0")}.jpg`
+);
+
+// ---------------------------------------------------------------------------
 // Stamp SVG — uses crown.png
 // ---------------------------------------------------------------------------
 
@@ -596,6 +604,11 @@ export default function Page() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [postcardImg, setPostcardImg] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPostcardImg(POSTCARD_IMAGES[Math.floor(Math.random() * POSTCARD_IMAGES.length)]);
+  }, []);
 
   function flip() {
     if (flipState !== "front") return;
@@ -675,7 +688,7 @@ export default function Page() {
             {/* Photo strip */}
             <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/7" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/will.jpg" alt="" className="w-full h-full object-cover object-center"
+              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-center"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
               {/* Gradient scrim at bottom */}
