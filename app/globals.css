@@ -80,7 +80,7 @@ body {
   100% { transform: translateY(70px) scale(0.75); opacity: 0; }
 }
 .card-drop {
-  animation: cardDrop 0.55s cubic-bezier(0.4, 0, 0.8, 0.6) forwards;
+  animation: cardDrop 1.2s cubic-bezier(0.4, 0, 0.8, 0.6) forwards;
 }
 
 @keyframes flagRaise {
@@ -90,7 +90,7 @@ body {
 .flag-raise {
   transform-box: fill-box;
   transform-origin: left center;
-  animation: flagRaise 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: flagRaise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes thankYouFade {

@@ -270,21 +270,26 @@ function Postmark() {
 
 function Mailbox({ flagUp = false }: { flagUp?: boolean }) {
   return (
-    <svg width="96" height="80" viewBox="0 0 96 80" fill="none" aria-hidden="true">
+    <svg width="130" height="110" viewBox="0 0 130 110" fill="none" aria-hidden="true">
       {/* Post */}
-      <rect x="42" y="58" width="10" height="22" rx="2" fill="#C4BAB0" />
-      {/* Body */}
-      <rect x="6" y="22" width="70" height="38" rx="7" fill="#E8E2DA" stroke="#C4BAB0" strokeWidth="1.2" />
-      {/* Dome top */}
-      <rect x="6" y="22" width="70" height="18" rx="7" fill="#D4CEC6" stroke="#C4BAB0" strokeWidth="1.2" />
+      <rect x="53" y="76" width="14" height="30" rx="3" fill="#C4BAB0"/>
+      {/* Main body: dome arch top + rectangular lower section, single closed path */}
+      {/* Arc: from (20,54) sweeping upward (sweep=0) to (100,54), rx=40 ry=22 = half-ellipse dome */}
+      <path d="M 20,76 L 20,54 A 40,22 0 0,0 100,54 L 100,76 Z"
+            fill="#DDD8D0" stroke="#C4BAB0" strokeWidth="1.5" strokeLinejoin="round"/>
+      {/* Lower body panel — slight darkening to distinguish from dome */}
+      <rect x="20" y="62" width="80" height="14" fill="rgba(0,0,0,0.06)"/>
+      {/* Dome highlight */}
+      <path d="M 30,46 A 30,16 0 0,0 90,46"
+            fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round"/>
       {/* Mail slot */}
-      <rect x="16" y="27" width="50" height="4.5" rx="2" fill="#C4BAB0" opacity="0.5" />
-      {/* Door seam */}
-      <line x1="6" y1="46" x2="76" y2="46" stroke="#C4BAB0" strokeWidth="1" />
-      {/* Flag arm — pivots at left edge of <g> bounding box via transform-box: fill-box */}
+      <rect x="30" y="56" width="52" height="5.5" rx="2.5" fill="rgba(60,40,20,0.18)"/>
+      {/* Panel seam line */}
+      <line x1="20" y1="62" x2="100" y2="62" stroke="rgba(90,72,50,0.12)" strokeWidth="1"/>
+      {/* Flag arm + flag — starts horizontal (down), raises to ~-78° (up) on flagUp */}
       <g className={flagUp ? "flag-raise" : undefined}>
-        <rect x="76" y="39" width="14" height="3" rx="1.5" fill="#B8B0A8" />
-        <rect x="86" y="31" width="11" height="10" rx="2" fill="#75B2DD" />
+        <rect x="100" y="61" width="20" height="4" rx="2" fill="#B8B0A8"/>
+        <rect x="116" y="51" width="14" height="11" rx="2" fill="#75B2DD"/>
       </g>
     </svg>
   );
@@ -595,9 +600,9 @@ function ConfirmationStep({ data }: { data: FormData }) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 400);
-    const t2 = setTimeout(() => setPhase(2), 1700);
-    const t3 = setTimeout(() => setPhase(3), 2500);
+    const t1 = setTimeout(() => setPhase(1), 600);
+    const t2 = setTimeout(() => setPhase(2), 2800);
+    const t3 = setTimeout(() => setPhase(3), 4200);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
@@ -688,12 +693,14 @@ function ConfirmationStep({ data }: { data: FormData }) {
 
       {/* Thank-you text — fades in after card drops */}
       {phase >= 3 && (
-        <div className="thank-you-reveal space-y-1">
+        <div className="thank-you-reveal space-y-4">
           <p className="text-stone-800 text-[16px] leading-relaxed">
             Thanks for filling out your info! I can&rsquo;t wait to send you this card.
-            Chat soon,
           </p>
-          <p className="text-stone-800 font-semibold text-[16px]">Will</p>
+          <div className="space-y-0.5">
+            <p className="text-stone-800 text-[16px]">Best,</p>
+            <p className="text-stone-800 font-semibold text-[16px]">Will</p>
+          </div>
         </div>
       )}
 
