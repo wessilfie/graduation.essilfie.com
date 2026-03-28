@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Lottie from "lottie-react";
 import { useEffect, useRef, useState } from "react";
+import sendMessageAnimation from "../public/send-message.json";
 
 // ---------------------------------------------------------------------------
 // Country config
@@ -422,7 +424,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
       </Field>
 
       <Field id="street" label="Street address">
-        <input id="street" type="text" autoComplete="street-address"
+        <input id="street" type="text" autoComplete="address-line1"
           placeholder={cfg.streetPlaceholder} value={data.street} onChange={set("street")}
           className={inputCls} />
       </Field>
@@ -533,7 +535,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
   return (
     <div className="form-unfold space-y-5">
       <div>
-        <p className="text-[18px] font-semibold text-stone-800">Does this look right?</p>
+        <p className="font-fraunces text-[26px] leading-tight text-stone-800">Does this look right?</p>
         <p className="text-xs text-stone-400 mt-0.5">Take a quick look before I send it your way.</p>
       </div>
 
@@ -569,28 +571,98 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
 // Confirmation step
 // ---------------------------------------------------------------------------
 
-function ConfirmationStep() {
+function ConfirmationStep({ data }: { data: FormData }) {
+  const [done, setDone] = useState(false);
+  const [nameVisible, setNameVisible] = useState(true);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setNameVisible(false), 500);
+    return () => clearTimeout(t);
+  }, []);
+
+  function handleComplete() {
+    if (completedRef.current) return;
+    completedRef.current = true;
+    setDone(true);
+  }
+
   return (
-    <div className="form-unfold space-y-6">
-      <div className="flex justify-center pt-2">
-        <div className="relative">
-          <div className="opacity-20"><Stamp /></div>
-          <div className="absolute -top-2 -right-4 stamp-thud"><Postmark /></div>
+    // Fixed-height stage — both layers live here and crossfade
+    <div className="form-unfold" style={{ position: "relative", minHeight: 280 }}>
+
+      {/* ── Lottie layer ─────────────────────────── */}
+      <div style={{
+        position: "absolute", inset: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 0 : 1,
+        pointerEvents: done ? "none" : "auto",
+      }}>
+        <div style={{ position: "relative" }}>
+          <Lottie
+            animationData={sendMessageAnimation}
+            loop={false}
+            onComplete={handleComplete}
+            style={{ width: 220, height: 220 }}
+          />
+          {/* Name overlay — centered on the envelope card shape */}
+          <div style={{
+            position: "absolute",
+            top: "50%", left: "50%",
+            transform: "translate(-50%, -54%)",
+            textAlign: "center",
+            pointerEvents: "none",
+            transition: "opacity 0.35s ease-out",
+            opacity: nameVisible ? 1 : 0,
+          }}>
+            <p style={{
+              fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.92)",
+              maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {data.name.split(" ")[0] || ""}
+            </p>
+            {data.city && (
+              <p style={{
+                fontSize: 8, color: "rgba(255,255,255,0.7)", marginTop: 2,
+                maxWidth: 64, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {data.city}{data.state ? `, ${data.state}` : ""}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="space-y-1">
-        <p className="text-stone-800 text-[16px] leading-relaxed">
-          Thanks for filling out your info! I can&rsquo;t wait to send you this card.
-          Chat soon,
+      {/* ── Thank-you layer ───────────────────────── */}
+      <div style={{
+        position: "absolute", inset: 0,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        textAlign: "center",
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 1 : 0,
+        pointerEvents: done ? "auto" : "none",
+      }}>
+        <p className="font-fraunces text-[42px] leading-tight text-stone-800 mb-3">Thanks!</p>
+        <p className="text-[15px] text-stone-600 leading-relaxed" style={{ maxWidth: 260 }}>
+          Can&rsquo;t wait to graduate and send you a card soon!
         </p>
-        <p className="text-stone-800 font-semibold text-[16px]">Will</p>
+
+        <p className="text-[15px] text-stone-700 mt-2">&mdash;Will</p>
       </div>
 
-      <div className="pt-2 border-t border-stone-100">
-        <Image src="/cbs-logo.png" alt="Columbia Business School"
-          width={88} height={34} className="opacity-35"
-          style={{ objectFit: "contain", objectPosition: "left" }} />
+      {/* CBS logo — always at the bottom, fades in with done */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        transition: "opacity 0.55s ease-out",
+        opacity: done ? 1 : 0,
+        pointerEvents: "none",
+      }}>
+        <div className="pt-2 border-t border-stone-100">
+          <Image src="/cbs-logo.png" alt="Columbia Business School"
+            width={88} height={34} className="opacity-35"
+            style={{ objectFit: "contain", objectPosition: "left" }} />
+        </div>
       </div>
     </div>
   );
@@ -611,6 +683,14 @@ export default function Page() {
 
   useEffect(() => {
     setPostcardImg(POSTCARD_IMAGES[Math.floor(Math.random() * POSTCARD_IMAGES.length)]);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("preview") === "confirmation") {
+      setFlipState("back");
+      setStep("confirmation");
+    }
   }, []);
 
   function flip() {
@@ -739,13 +819,15 @@ export default function Page() {
         {/* ── BACK FACE ── */}
         {(flipState === "flip-in" || flipState === "back") && (
           <div className="px-6 pt-6 pb-7 space-y-5">
-            {/* Letter header — date + stamp, on form and review steps */}
+            {/* Letter header — stamp always, date only on form */}
             {(step === "form" || step === "review") && (
               <div className="flex items-start justify-between gap-4">
-                <div className="pt-1">
-                  <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
-                  <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
-                </div>
+                {step === "form" ? (
+                  <div className="pt-1">
+                    <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
+                    <p className="text-xs text-stone-400 mt-0.5">New York, NY</p>
+                  </div>
+                ) : <div />}
                 <div className="shrink-0">
                   <Stamp />
                 </div>
@@ -769,7 +851,7 @@ export default function Page() {
               <p className="pt-1">&mdash;Will</p>
             </div>
 
-            <div className="border-t border-stone-100" />
+            {step === "form" && <div className="border-t border-stone-100" />}
 
             {step === "form" && (
               <FormStep data={formData} errors={errors} onChange={setFormData}
@@ -781,7 +863,7 @@ export default function Page() {
                 onConfirm={handleSubmit} submitting={submitting} error={submitError} />
             )}
 
-            {step === "confirmation" && <ConfirmationStep />}
+            {step === "confirmation" && <ConfirmationStep data={formData} />}
           </div>
         )}
       </div>
