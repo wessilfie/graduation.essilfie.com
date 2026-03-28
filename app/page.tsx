@@ -510,11 +510,14 @@ function FormStep({ data, errors, onChange, onContinue }: {
 // Review step
 // ---------------------------------------------------------------------------
 
-function ReviewRow({ label, value }: { label: string; value: string }) {
+function ReviewRow({ label, value }: { label: string; value: string | string[] }) {
+  const lines = Array.isArray(value) ? value.filter(Boolean) : [value];
   return (
     <div className="flex flex-col gap-0.5 py-2.5 border-b border-stone-100 last:border-0">
       <span className="text-xs text-stone-400">{label}</span>
-      <span className="text-sm text-stone-800">{value || "—"}</span>
+      <span className="text-sm text-stone-800">
+        {lines.length ? lines.map((line, i) => <span key={i} className="block">{line}</span>) : "—"}
+      </span>
     </div>
   );
 }
@@ -538,7 +541,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
         <ReviewRow label="Name" value={data.name} />
         <ReviewRow label="Email" value={data.email} />
         <ReviewRow label="Mailing address"
-          value={[streetFull, cityLine, cfg.name].filter(Boolean).join(", ")} />
+          value={[data.street, data.street2, cityLine, cfg.name].filter(Boolean)} />
       </div>
       {!streetFull && (
         <p className="text-xs text-stone-400 -mt-2">
@@ -672,9 +675,9 @@ export default function Page() {
   return (
     <>
       <CbsBackground />
-      <main className="relative z-10 flex flex-col items-center justify-center px-4 py-8 sm:py-12" style={{ minHeight: "100dvh" }}>
+      <main className="relative z-10 flex flex-col items-center px-4 py-8 sm:py-12" style={{ minHeight: "100dvh" }}>
       <div
-        className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
+        className={`my-auto font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
           backgroundColor: "#FAFAF7",
           border: "1px solid #E0DBD4",
@@ -736,8 +739,8 @@ export default function Page() {
         {/* ── BACK FACE ── */}
         {(flipState === "flip-in" || flipState === "back") && (
           <div className="px-6 pt-6 pb-7 space-y-5">
-            {/* Letter header — date + stamp, only on form step */}
-            {step === "form" && (
+            {/* Letter header — date + stamp, on form and review steps */}
+            {(step === "form" || step === "review") && (
               <div className="flex items-start justify-between gap-4">
                 <div className="pt-1">
                   <p className="text-xs tracking-widest text-stone-400 uppercase font-medium">April 2026</p>
