@@ -672,7 +672,7 @@ export default function Page() {
   return (
     <>
       <CbsBackground />
-      <main className="relative z-10 min-h-screen flex flex-col items-center justify-start sm:justify-center px-4 py-12">
+      <main className="relative z-10 flex flex-col items-center justify-center px-4 py-8 sm:py-12" style={{ minHeight: "100dvh" }}>
       <div
         className={`font-fraunces w-full max-w-[520px] sm:max-w-[600px] lg:max-w-[680px] rounded-[3px] overflow-hidden relative ${animClass}`}
         style={{
@@ -688,7 +688,7 @@ export default function Page() {
             {/* Photo strip */}
             <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/7" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-center"
+              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-top"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
               {/* Gradient scrim at bottom */}
