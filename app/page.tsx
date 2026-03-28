@@ -809,7 +809,7 @@ export default function Page() {
                   You!
                 </p>
                 <p className="text-[10.5px] text-stone-400 mt-1.5 leading-snug">
-                  flip to add your address
+                  Flip to add your address
                 </p>
               </div>
             </div>
