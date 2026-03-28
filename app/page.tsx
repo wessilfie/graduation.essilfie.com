@@ -424,20 +424,20 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
       </Field>
 
       <Field id="street" label="Street address">
-        <input id="street" type="text" autoComplete="address-line1"
+        <input id="street" name="address-line1" type="text" autoComplete="address-line1"
           placeholder={cfg.streetPlaceholder} value={data.street} onChange={set("street")}
           className={inputCls} />
       </Field>
 
       <Field id="street2" label="Address line 2" hint="(apt, suite, floor, etc.)">
-        <input id="street2" type="text" autoComplete="address-line2"
+        <input id="street2" name="address-line2" type="text" autoComplete="address-line2"
           placeholder="Apt, suite, floor, etc." value={data.street2} onChange={set("street2")}
           className={inputCls} />
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
         <Field id="city" label="City">
-          <input id="city" type="text" autoComplete="address-level2"
+          <input id="city" name="address-level2" type="text" autoComplete="address-level2"
             placeholder="City" value={data.city} onChange={set("city")} className={inputCls} />
         </Field>
         {!cfg.hideState && (
@@ -447,7 +447,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
                 autoComplete="address-level1"
                 options={stateOptions} onChange={v => onChange({ ...data, state: v })} />
             ) : (
-              <input id="state" type="text" autoComplete="address-level1"
+              <input id="state" name="address-level1" type="text" autoComplete="address-level1"
                 placeholder={cfg.stateLabel} value={data.state} onChange={set("state")} className={inputCls} />
             )}
           </Field>
@@ -455,7 +455,7 @@ function AddressFields({ data, onChange }: { data: FormData; onChange: (d: FormD
       </div>
 
       <Field id="zip" label={cfg.zipLabel}>
-        <input id="zip" type="text" autoComplete="postal-code"
+        <input id="zip" name="postal-code" type="text" autoComplete="postal-code"
           placeholder={cfg.zipPlaceholder || cfg.zipLabel}
           value={data.zip} onChange={set("zip")} className={inputCls} />
       </Field>
@@ -475,14 +475,14 @@ function FormStep({ data, errors, onChange, onContinue }: {
     onChange({ ...data, [key]: e.target.value });
 
   return (
-    <div className="form-unfold space-y-4">
+    <form autoComplete="on" onSubmit={e => { e.preventDefault(); onContinue(); }} className="form-unfold space-y-4">
       <Field id="name" label="Full name" required error={errors.name}>
-        <input id="name" type="text" autoComplete="name" placeholder="Your name"
+        <input id="name" name="name" type="text" autoComplete="name" placeholder="Your name"
           value={data.name} onChange={set("name")} className={inputCls} />
       </Field>
 
       <Field id="email" label="Email address" required error={errors.email}>
-        <input id="email" type="email" autoComplete="email" placeholder="your@email.com"
+        <input id="email" name="email" type="email" autoComplete="email" placeholder="your@email.com"
           value={data.email} onChange={set("email")} className={inputCls} />
       </Field>
 
@@ -500,11 +500,11 @@ function FormStep({ data, errors, onChange, onContinue }: {
         </p>
       </div>
 
-      <button type="button" onClick={onContinue}
+      <button type="submit"
         className="w-full py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] active:bg-[#4A8DB8] transition-colors mt-2">
         Review &amp; submit &rarr;
       </button>
-    </div>
+    </form>
   );
 }
 
