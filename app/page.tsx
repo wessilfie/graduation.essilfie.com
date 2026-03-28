@@ -142,7 +142,7 @@ const INITIAL: FormData = {
 // Postcard photo pool
 // ---------------------------------------------------------------------------
 
-const POSTCARD_IMAGES = Array.from({ length: 21 }, (_, i) =>
+const POSTCARD_IMAGES = Array.from({ length: 25 }, (_, i) =>
   `postcard-${String(i + 1).padStart(2, "0")}.jpg`
 );
 
@@ -809,7 +809,7 @@ export default function Page() {
                   You!
                 </p>
                 <p className="text-[10.5px] text-stone-400 mt-1.5 leading-snug">
-                  flip to add your address
+                  Flip to add your address
                 </p>
               </div>
             </div>
