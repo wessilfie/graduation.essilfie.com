@@ -688,7 +688,7 @@ export default function Page() {
             {/* Photo strip */}
             <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/7" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-center"
+              <img src={postcardImg ? `/postcardpics/${postcardImg}` : undefined} alt="" className="w-full h-full object-cover object-top"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 
               {/* Gradient scrim at bottom */}
