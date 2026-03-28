@@ -269,27 +269,51 @@ function Postmark() {
 }
 
 function Mailbox({ flagUp = false }: { flagUp?: boolean }) {
+  // Classic US curbside mailbox — viewed from slightly above/front.
+  // viewBox 240×200. Box: x=40–200 (w=160). Arch: rx=80 ry=55 → peak y=60.
+  // Shoulder at y=115. Body y=115–150. Post y=150–198.
+  // ry/rx = 0.69 → pronounced dome, not a saucer.
   return (
-    <svg width="130" height="110" viewBox="0 0 130 110" fill="none" aria-hidden="true">
+    <svg width="220" height="185" viewBox="0 0 240 200" fill="none" aria-hidden="true">
       {/* Post */}
-      <rect x="53" y="76" width="14" height="30" rx="3" fill="#C4BAB0"/>
-      {/* Main body: dome arch top + rectangular lower section, single closed path */}
-      {/* Arc: from (20,54) sweeping upward (sweep=0) to (100,54), rx=40 ry=22 = half-ellipse dome */}
-      <path d="M 20,76 L 20,54 A 40,22 0 0,0 100,54 L 100,76 Z"
+      <rect x="113" y="150" width="14" height="48" rx="3" fill="#C4BAB0"/>
+      {/* Subtle ground shadow */}
+      <ellipse cx="120" cy="154" rx="58" ry="5" fill="rgba(0,0,0,0.07)"/>
+
+      {/* ── Main mailbox body: dome + rectangular lower section ── */}
+      {/* Arc A 80,55: half-ellipse, rx=80=half(160), ry=55. Peak at (120,60). */}
+      <path d="M 40,150 L 40,115 A 80,55 0 0,0 200,115 L 200,150 Z"
             fill="#DDD8D0" stroke="#C4BAB0" strokeWidth="1.5" strokeLinejoin="round"/>
-      {/* Lower body panel — slight darkening to distinguish from dome */}
-      <rect x="20" y="62" width="80" height="14" fill="rgba(0,0,0,0.06)"/>
-      {/* Dome highlight */}
-      <path d="M 30,46 A 30,16 0 0,0 90,46"
-            fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.5" strokeLinecap="round"/>
+
+      {/* Dome face — very subtle lightening */}
+      <path d="M 40,115 A 80,55 0 0,0 200,115 Z" fill="rgba(255,255,255,0.07)"/>
+
+      {/* Dome highlight — sits mid-dome, creates cylindrical depth */}
+      <path d="M 62,92 A 58,36 0 0,0 178,92"
+            fill="none" stroke="rgba(255,255,255,0.65)" strokeWidth="3.5" strokeLinecap="round"/>
+
+      {/* Lower body panel — slightly darker */}
+      <rect x="40" y="115" width="160" height="35" fill="rgba(0,0,0,0.045)"/>
+
+      {/* Shoulder seam */}
+      <line x1="40" y1="115" x2="200" y2="115" stroke="#C4BAB0" strokeWidth="1.2"/>
+
+      {/* Door frame outline */}
+      <rect x="50" y="119" width="140" height="24" rx="2"
+            fill="none" stroke="rgba(150,130,110,0.28)" strokeWidth="1"/>
+
       {/* Mail slot */}
-      <rect x="30" y="56" width="52" height="5.5" rx="2.5" fill="rgba(60,40,20,0.18)"/>
-      {/* Panel seam line */}
-      <line x1="20" y1="62" x2="100" y2="62" stroke="rgba(90,72,50,0.12)" strokeWidth="1"/>
-      {/* Flag arm + flag — starts horizontal (down), raises to ~-78° (up) on flagUp */}
+      <rect x="66" y="124" width="108" height="7" rx="3.5" fill="rgba(60,40,20,0.18)"/>
+      <rect x="66" y="124" width="108" height="3" rx="1.5" fill="rgba(60,40,20,0.08)"/>
+
+      {/* Latch */}
+      <circle cx="168" cy="134" r="4" fill="none" stroke="rgba(150,130,110,0.45)" strokeWidth="1.5"/>
+      <circle cx="168" cy="134" r="1.5" fill="rgba(150,130,110,0.45)"/>
+
+      {/* Flag arm + flag — bbox x=200–236 y=116–133, pivot left-center=(200,124.5) */}
       <g className={flagUp ? "flag-raise" : undefined}>
-        <rect x="100" y="61" width="20" height="4" rx="2" fill="#B8B0A8"/>
-        <rect x="116" y="51" width="14" height="11" rx="2" fill="#75B2DD"/>
+        <rect x="200" y="127" width="24" height="5" rx="2.5" fill="#B8B0A8"/>
+        <rect x="220" y="116" width="16" height="13" rx="2" fill="#75B2DD"/>
       </g>
     </svg>
   );
@@ -600,9 +624,9 @@ function ConfirmationStep({ data }: { data: FormData }) {
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(0);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 600);
-    const t2 = setTimeout(() => setPhase(2), 2800);
-    const t3 = setTimeout(() => setPhase(3), 4200);
+    const t1 = setTimeout(() => setPhase(1), 500);
+    const t2 = setTimeout(() => setPhase(2), 2400);
+    const t3 = setTimeout(() => setPhase(3), 3700);
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, []);
 
@@ -616,7 +640,7 @@ function ConfirmationStep({ data }: { data: FormData }) {
     <div className="form-unfold space-y-6">
 
       {/* Animation stage: mini postcard + mailbox */}
-      <div className="flex flex-col items-center pt-2">
+      <div className="flex flex-col items-center pt-2 gap-1">
 
         {/* Mini postcard — hidden once thank-you text shows */}
         {phase < 3 && (
