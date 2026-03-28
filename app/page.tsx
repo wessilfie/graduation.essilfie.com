@@ -501,7 +501,7 @@ function FormStep({ data, errors, onChange, onContinue }: {
       </div>
 
       <button type="submit"
-        className="w-full py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] active:bg-[#4A8DB8] transition-colors mt-2">
+        className="w-full py-3 bg-[#2B7FC4] text-white text-sm font-semibold rounded-md hover:bg-[#246DAD] active:bg-[#1D5E96] transition-colors mt-2 shadow-sm cursor-pointer">
         Review &amp; submit &rarr;
       </button>
     </form>
@@ -558,7 +558,7 @@ function ReviewStep({ data, onBack, onConfirm, submitting, error }: {
           Edit
         </button>
         <button type="button" onClick={onConfirm} disabled={submitting}
-          className="flex-[2] py-3 bg-[#75B2DD] text-white text-sm font-semibold rounded-md hover:bg-[#5A9CC9] disabled:opacity-50 transition-colors">
+          className="flex-[2] py-3 bg-[#2B7FC4] text-white text-sm font-semibold rounded-md hover:bg-[#246DAD] active:bg-[#1D5E96] disabled:opacity-50 transition-colors shadow-sm cursor-pointer">
           {submitting ? "Sending…" : "Confirm & send →"}
         </button>
       </div>
