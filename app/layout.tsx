@@ -47,7 +47,11 @@ export const metadata: Metadata = {
     images: ["https://graduation.essilfie.com/postcardpics/postcard-13.jpg"],
   },
   other: {
+    // LinkedIn requires name="image"
     image: "https://graduation.essilfie.com/postcardpics/postcard-13.jpg",
+    // WhatsApp checks secure_url; all scrapers benefit from explicit type
+    "og:image:secure_url": "https://graduation.essilfie.com/postcardpics/postcard-13.jpg",
+    "og:image:type": "image/jpeg",
   },
 };
 
