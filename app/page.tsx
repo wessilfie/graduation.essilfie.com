@@ -145,16 +145,18 @@ export default function Page() {
   const [postcardImg] = useState<string>(
     () => POSTCARD_IMAGES[Math.floor(Math.random() * POSTCARD_IMAGES.length)]
   );
+  const goToDestination = () => {
+    window.location.href = DESTINATION_URL;
+  };
 
   return (
     <>
       <CbsBackground />
       <main className="relative z-10 flex min-h-[100dvh] flex-col items-center px-4 py-8 sm:py-12">
         <div className="my-auto flex w-full max-w-[520px] flex-col items-center sm:max-w-[600px] lg:max-w-[680px]">
-          <a
-            href={DESTINATION_URL}
-            target="_blank"
-            rel="noreferrer"
+          <div
+            role="button"
+            tabIndex={0}
             aria-label="Open uswiththeworld.com"
             className="font-fraunces block w-full overflow-hidden rounded-[3px]"
             style={{
@@ -162,6 +164,14 @@ export default function Page() {
               border: "1px solid #E0DBD4",
               boxShadow:
                 "0 2px 6px rgba(0,0,0,0.07), 0 10px 24px rgba(0,0,0,0.07), 0 32px 64px rgba(0,0,0,0.06)",
+              cursor: "pointer",
+            }}
+            onClick={goToDestination}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                goToDestination();
+              }
             }}
           >
             <div className="relative w-full bg-[#D4CFC8]" style={{ aspectRatio: "16/9" }}>
@@ -225,60 +235,35 @@ export default function Page() {
                 </p>
                 <p className="text-[26px] leading-none text-stone-800">You!</p>
                 <p className="mt-1.5 text-[10.5px] leading-snug text-stone-400">
-                  Click to continue on uswiththeworld.com
+                  Flip to add your address
                 </p>
               </div>
             </div>
-          </a>
-
-          <div className="mt-6 flex flex-col items-center gap-3 text-center">
-            <a
-              href={DESTINATION_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="flex flex-col items-center gap-1.5"
-            >
-              <div
-                className="flex h-10 w-10 items-center justify-center rounded-full"
-                style={{
-                  border: "1px solid rgba(90,72,50,0.22)",
-                  backgroundColor: "rgba(250,250,247,0.7)",
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-stone-500">
-                  <path
-                    d="M5 13L13 5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M7 5h6v6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <span className="text-[11px] tracking-wide text-stone-500">
-                Open uswiththeworld.com
-              </span>
-            </a>
-
-            <div className="max-w-[420px] rounded-[3px] border border-stone-200/80 bg-[rgba(250,250,247,0.82)] px-4 py-3 text-sm leading-relaxed text-stone-600 backdrop-blur-sm">
-              Graduation card signups now continue on{" "}
-              <a
-                href={DESTINATION_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="font-medium text-[#003DA5] underline underline-offset-2"
-              >
-                uswiththeworld.com
-              </a>
-              .
-            </div>
           </div>
+
+          <button
+            type="button"
+            onClick={goToDestination}
+            className="flip-hint mt-6 flex flex-col items-center gap-1.5 group"
+          >
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-colors"
+              style={{
+                border: "1px solid rgba(90,72,50,0.22)",
+                backgroundColor: "rgba(250,250,247,0.7)",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-stone-500 group-hover:text-stone-700 transition-colors">
+                <path d="M3.5 9A5.5 5.5 0 0 1 14 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M14 3v2.5h-2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M14.5 9A5.5 5.5 0 0 1 4 12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                <path d="M4 15v-2.5h2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <span className="text-[11px] tracking-wide text-stone-400 group-hover:text-stone-600 transition-colors">
+              Flip to open
+            </span>
+          </button>
         </div>
 
         <div className="pointer-events-none absolute right-6 top-6 hidden sm:block">
